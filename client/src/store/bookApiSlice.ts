@@ -14,9 +14,9 @@ export const bookApiSlice = createApi({
   }),
   tagTypes: ['Book'],
   endpoints: (builder) => ({
-    getBooks: builder.query<Book[], {page: number, sortColumn: string, sortOrder: string, searchKey: string, searchField: string | undefined,}>({
+    getBooks: builder.query<{books: Book[], last_page: number}, {page: number, sortColumn: string, sortOrder: string, searchKey: string, searchField: string | undefined,}>({
         transformResponse(response: any) {
-            return response.data;
+          return {books: response.data, last_page: response.last_page};
         },
       query: ({page = 1, sortColumn, sortOrder, searchField, searchKey}) => `books?page=${page}&sortColumn=${sortColumn}&sortOrder=${sortOrder}&searchKey=${searchKey}&searchField=${searchField}`,
       providesTags: ['Book'],

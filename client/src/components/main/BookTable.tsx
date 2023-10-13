@@ -18,7 +18,7 @@ const BookTable = () => {
   const [sortColumn, setSortColumn] = useState("");
   const searchValues = useAppSelector((state) => state.bookStatus.searchValues);
   const {
-    data: books,
+    data: bookResponse,
     isLoading,
     isError,
   } = useGetBooksQuery({
@@ -66,18 +66,20 @@ const BookTable = () => {
             </tr>
           </thead>
           <tbody>
-            {books?.map(({ id, title, body, author, status }, index) => {
-              const isLast = index === books?.length - 1;
-              const classes = isLast
-                ? "p-4"
-                : "p-4 border-b border-blue-gray-50";
-              return (
-                <BookTableItem
-                  key={index}
-                  {...{ title, body, author, status, classes, id }}
-                />
-              );
-            })}
+            {bookResponse?.books?.map(
+              ({ id, title, body, author, status }, index) => {
+                const isLast = index === bookResponse.books?.length - 1;
+                const classes = isLast
+                  ? "p-4"
+                  : "p-4 border-b border-blue-gray-50";
+                return (
+                  <BookTableItem
+                    key={index}
+                    {...{ title, body, author, status, classes, id }}
+                  />
+                );
+              }
+            )}
           </tbody>
         </table>
       </CardBody>
@@ -90,6 +92,7 @@ const BookTable = () => {
             variant="outlined"
             size="sm"
             onClick={() => setPage(page - 1)}
+            disabled={page === 1}
           >
             Previous
           </Button>
@@ -97,6 +100,7 @@ const BookTable = () => {
             variant="outlined"
             size="sm"
             onClick={() => setPage(page + 1)}
+            disabled={page === bookResponse?.last_page}
           >
             Next
           </Button>
