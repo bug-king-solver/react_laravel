@@ -10,6 +10,8 @@ import { faSort } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useGetBooksQuery } from "../../store/bookApiSlice";
 import { useAppSelector } from "../../store/redux-hooks";
+import CustomSpinner from "../utils/CustomSpinner";
+import ErrorBlock from "../utils/ErrorBlock";
 
 const BookTable = () => {
   const TABLE_HEAD = ["Title", "Author", "Body", "Status", ""];
@@ -29,15 +31,17 @@ const BookTable = () => {
     searchField: searchValues.searchField,
   });
   const handleSortByTag = (index: number) => {
-    const order = sortOrder === "asc" ? "desc" : "asc";
-    setSortOrder(order);
-    setSortColumn(TABLE_HEAD[index]);
+    if (index < 4) {
+      const order = sortOrder === "asc" ? "desc" : "asc";
+      setSortOrder(order);
+      setSortColumn(TABLE_HEAD[index]);
+    }
   };
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <CustomSpinner />;
   }
   if (isError) {
-    return <div>Error...</div>;
+    return <ErrorBlock />;
   }
   return (
     <>
