@@ -17,4 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/export/csv', 'ExportController@exportCSV');
+Route::get('/export/xml', 'ExportController@exportXML');
+
 Route::resource('books', 'BookController');
