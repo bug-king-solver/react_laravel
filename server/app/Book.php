@@ -10,5 +10,6 @@ class Book extends Model
         'title',
         'author',
         'body',
+        'status',
     ];
 }
