@@ -18,12 +18,7 @@ class BookController extends Controller
         $sortOrder = $request->query('sortOrder');
         $searchKey = $request->query('searchKey');
         $searchField = $request->query('searchField');
-        $currentId = $request->query('currentId');
         $booksQuery = Book::query();
-        if ($currentId) {
-            $book = Book::find($currentId);
-            return response()->json($book);
-        }
         if ($sortColumn && $sortOrder) {
             $booksQuery->orderBy($sortColumn, $sortOrder);
         }
@@ -32,6 +27,10 @@ class BookController extends Controller
         }
         $paginatedBooks = $booksQuery->paginate(10);
         return response()->json($paginatedBooks);
+    }
+    public function show(Book $book)
+    {
+        return response()->json($book);
     }
     /**
      * Store a newly created resource in storage.
