@@ -16,7 +16,7 @@ services:
     ports:
     - '8080:80'
     volumes:
-    - ./src:/var/www/html
+    - ./server:/var/www/html
 
   mysql:
     image: mysql:8
