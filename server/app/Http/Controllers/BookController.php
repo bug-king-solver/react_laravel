@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Book;
+use League\Csv\XMLConverter;
+use League\Csv\Writer;
+use SplTempFileObject;
+
 
 class BookController extends Controller
 {
@@ -87,4 +91,78 @@ class BookController extends Controller
         Book::findOrFail($id)->delete();
         return response()->json(null, 204);
     }
+
+    public function exportAsCsvAndXml(Request $request)
+    {
+        $type = $request->query('type');
+        $columns = $request->query('columns');
+        $books = Book::all();
+
+        switch ($type) {
+            case 'csv':
+                $data = [];
+                $headers = [
+                    'Content-Type' => 'text/csv',
+                    'Content-Transfer-Encoding' => 'binary',
+                    'Content-Disposition' => 'attachment; filename="books.csv"',
+                ];
+
+                if ($columns === 'title') {
+                    $data[] = ['title'];
+                }
+
+                if ($columns === 'author') {
+                    $data[] = ['author'];
+                }
+
+                if ($columns === 'both') {
+                    $data[] = ['title', 'author'];
+                }
+
+                foreach ($books as $book) {
+                    $rowData = [];
+
+                    if ($columns === 'title' || $columns === 'both') {
+                        $rowData[] = $book->title;
+                    }
+
+                    if ($columns === 'author' || $columns === 'both') {
+                        $rowData[] = $book->author;
+                    }
+
+                    $data[] = $rowData;
+                }
+
+                $csv = \League\Csv\Writer::createFromFileObject(new \SplTempFileObject);
+                $csv->insertAll($data);
+
+                return response((string) $csv, 200, $headers);
+
+            case 'xml':
+                $xml = new \SimpleXMLElement('<books></books>');
+
+                foreach ($books as $book) {
+                    $bookElement = $xml->addChild('book');
+
+                    if ($columns === 'title' || $columns === 'both') {
+                        $bookElement->addChild('title', $book->title);
+                    }
+
+                    if ($columns === 'author' || $columns === 'both') {
+                        $bookElement->addChild('author', $book->author);
+                    }
+                }
+
+                $response = response($xml->asXML(), 200);
+                $response->header('Content-Type', 'application/xml');
+                $response->header('Content-Disposition', 'attachment; filename=books.xml');
+
+                return $response;
+
+            default:
+                return response('Invalid export type', 400);
+        }
+    }
+
+
 }
