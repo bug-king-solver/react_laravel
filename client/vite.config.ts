@@ -9,13 +9,13 @@ const backendServerUrl = 'http://localhost:8080';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()], // Add this line
-  server:{
-    proxy:{
-      '/api':{
-        target: backendServerUrl,
-        changeOrigin: true,
-        // rewrite: (path) => path.replace(/^\/api/, ''),
-      },
-    }
-  }
+  // server:{
+  //   proxy:{
+  //     '/api':{
+  //       target: backendServerUrl,
+  //       changeOrigin: true,
+  //       // rewrite: (path) => path.replace(/^\/api/, ''),
+  //     },
+  //   }
+  // }
 });

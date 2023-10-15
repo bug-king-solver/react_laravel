@@ -2,7 +2,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Book } from './type';
 
-const apiUrl = '/api';
+const apiUrl = 'http://localhost:8080/api';
 
 export const bookApiSlice = createApi({
   reducerPath: 'bookApi',
