@@ -1,6 +1,21 @@
 version: "3.7"
 
 services:
+  client:
+    container_name: $COMPOSE_PROJECT_NAME-client
+    build:
+      context: ./client
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client:/app
+    expose:
+      - 5173
+    environment:
+      HOST: 0.0.0.0
+    networks:
+      - app-network
+
   laravel:
     image: yaraku/assignment:$COMPOSE_PROJECT_NAME
     container_name: $COMPOSE_PROJECT_NAME-laravel
@@ -17,6 +32,10 @@ services:
     - '8080:80'
     volumes:
     - ./server:/var/www/html
+    depends_on:
+      - mysql
+    networks:
+      - app-network
 
   mysql:
     image: mysql:8
@@ -28,3 +47,13 @@ services:
       MYSQL_PASSWORD: secret
       MYSQL_DATABASE: laravel
       MYSQL_ROOT_PASSWORD: secret
+    volumes:
+      - mysql:/var/lib/mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+volumes:
+  mysql:
+    driver: local
