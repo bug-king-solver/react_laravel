@@ -50,8 +50,15 @@ export const bookApiSlice = createApi({
       }),
       invalidatesTags: ['Book'],
     }),
+    exportXmlAndCSV: builder.mutation<string, object>({
+      query: (type) => ({
+        url: `books/exportAsCsvAndXml`,
+        method: 'POST',
+        body: type
+      })
+    })
   }),
 });
 
 // Export hooks for using the API endpoints
-export const { useGetBooksQuery, useCreateBookMutation, useUpdateBookMutation, useDeleteBookMutation, useGetBookQuery,} = bookApiSlice;
+export const { useGetBooksQuery, useCreateBookMutation, useUpdateBookMutation, useDeleteBookMutation, useGetBookQuery, useExportXmlAndCSVMutation, } = bookApiSlice;
