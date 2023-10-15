@@ -21,6 +21,9 @@ export const bookApiSlice = createApi({
       query: ({page = 1, sortColumn, sortOrder, searchField, searchKey}) => `books?page=${page}&sortColumn=${sortColumn}&sortOrder=${sortOrder}&searchKey=${searchKey}&searchField=${searchField}`,
       providesTags: ['Book'],
     }),
+    exportXmlAndCSV: builder.query<void, {columns: string, type: string}>({
+      query: ({columns, type}) => `books/exportAsCsvAndXml?columns=${columns}&type=${type}`,
+    }),
     getBook: builder.query<Book, number> ({
       transformResponse(response: any) {
           return {...response,status:response.status > 0};
@@ -50,15 +53,8 @@ export const bookApiSlice = createApi({
       }),
       invalidatesTags: ['Book'],
     }),
-    exportXmlAndCSV: builder.mutation<string, object>({
-      query: (type) => ({
-        url: `books/exportAsCsvAndXml`,
-        method: 'POST',
-        body: type
-      })
-    })
   }),
 });
 
 // Export hooks for using the API endpoints
-export const { useGetBooksQuery, useCreateBookMutation, useUpdateBookMutation, useDeleteBookMutation, useGetBookQuery, useExportXmlAndCSVMutation, } = bookApiSlice;
+export const { useGetBooksQuery, useCreateBookMutation, useUpdateBookMutation, useDeleteBookMutation, useGetBookQuery, useExportXmlAndCSVQuery, } = bookApiSlice;

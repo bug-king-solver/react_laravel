@@ -9,14 +9,21 @@ import { useAppDispatch } from "../../store/redux-hooks";
 import { changeBookModalStatus } from "../../store/bookStatusAction";
 import { ModalStatus } from "../../store/type";
 import SearchInput from "./SearchInput";
-import { useExportXmlAndCSVMutation } from "../../store/bookApiSlice";
+import { useExportXmlAndCSVQuery } from "../../store/bookApiSlice";
+import { useState } from "react";
 
 const MainHeader = () => {
   const dispatch = useAppDispatch();
-  const [exportXmlAndCSV] = useExportXmlAndCSVMutation();
-  const onHandleExport = (type: string) => {
-    exportXmlAndCSV({ type: type });
-  };
+  const [columns, setColumns] = useState("");
+  const [type, setType] = useState("");
+  const [apiCall, setApiCall] = useState(false);
+  const {} = useExportXmlAndCSVQuery(
+    {
+      columns: columns,
+      type: type,
+    },
+    { skip: !apiCall }
+  );
   return (
     <CardHeader floated={false} shadow={false} className="rounded-none">
       <div className="mb-8 flex items-center justify-between gap-8">
@@ -28,35 +35,50 @@ const MainHeader = () => {
             See information about all books
           </Typography>
         </div>
-        <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-          <Button
-            className="flex items-center gap-3"
-            size="sm"
-            onClick={() =>
-              dispatch(
-                changeBookModalStatus({
-                  modalStatus: ModalStatus.OPEN,
-                  currentId: undefined,
-                })
-              )
-            }
-          >
-            Add book
-          </Button>
+        <form
+          className="flex shrink-0 flex-col gap-2 sm:flex-row"
+          action=""
+          method="get"
+        >
           <div className="sm">
-            <Select label="Export as CSV and XML">
-              <Option onClick={() => onHandleExport("title")}>
-                Only Title
-              </Option>
-              <Option onClick={() => onHandleExport("author")}>
-                Only Author
-              </Option>
-              <Option onClick={() => onHandleExport("both")}>
+            <Select label="Select Columns">
+              <Option onClick={() => setColumns("title")}>Only Title</Option>
+              <Option onClick={() => setColumns("author")}>Only Author</Option>
+              <Option onClick={() => setColumns("both")}>
                 Both Title and Author
               </Option>
             </Select>
           </div>
-        </div>
+          <div className="sm">
+            <Select label="Select Type">
+              <Option onClick={() => setType("csv")}>CSV</Option>
+              <Option onClick={() => setType("xml")}>XML</Option>
+            </Select>
+          </div>
+          <Button
+            className="flex items-center gap-3"
+            size="sm"
+            onClick={() => setApiCall(true)}
+          >
+            Export
+          </Button>
+        </form>
+      </div>
+      <div className="flex shrink-0 justify-end flex-col gap-2 mb-3 sm:flex-row">
+        <Button
+          className="flex items-center gap-3"
+          size="sm"
+          onClick={() =>
+            dispatch(
+              changeBookModalStatus({
+                modalStatus: ModalStatus.OPEN,
+                currentId: undefined,
+              })
+            )
+          }
+        >
+          Add book
+        </Button>
       </div>
       <div className="flex flex-col items-center justify-end gap-4 md:flex-row">
         <SearchInput />
