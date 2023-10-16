@@ -5,7 +5,7 @@
 
 ## Setup
 
-1. Clone the repository.
+1. Clone the repository. `git clone https://github.com/bug-king-solver/react_laravel`.
 2. Start the containers by running `docker compose up -d` in the project root.
 3. Install the composer packages by running `docker exec assignment01-laravel composer install`.
 4. Create database schemas `docker exec assignment01-laravel php artisan migrate:refresh`.
