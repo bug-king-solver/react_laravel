@@ -101,12 +101,6 @@ class BookController extends Controller
         switch ($type) {
             case 'csv':
                 $data = [];
-                $headers = [
-                    'Content-Type' => 'text/csv',
-                    'Content-Transfer-Encoding' => 'binary',
-                    'Content-Disposition' => 'attachment; filename="books.csv"',
-                ];
-
                 if ($columns === 'title') {
                     $data[] = ['title'];
                 }
@@ -136,8 +130,9 @@ class BookController extends Controller
                 $csv = \League\Csv\Writer::createFromFileObject(new \SplTempFileObject);
                 $csv->insertAll($data);
 
-                return response((string) $csv, 200, $headers);
-
+                return response((string) $csv, 200)
+                    ->header('Content-Type', 'text/csv')
+                    ->header('Content-Disposition', 'attachment; filename="books.csv"');
             case 'xml':
                 $xml = new \SimpleXMLElement('<books></books>');
 
